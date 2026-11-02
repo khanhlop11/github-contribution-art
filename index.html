@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="vi" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CustomYourGithub - GitHub Contribution Graph Art Studio</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        ghBg: '#0d1117',
+                        ghCard: '#161b22',
+                        ghBorder: '#30363d',
+                        ghL1: '#0e4429',
+                        ghL2: '#006d32',
+                        ghL3: '#26a641',
+                        ghL4: '#39d353',
+                        ghBlue: '#58a6ff',
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="style.css">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-ghBg text-slate-200 min-h-screen flex flex-col antialiased selection:bg-ghL3 selection:text-black">
+
+    <!-- Top Navigation Bar -->
+    <header class="border-b border-ghBorder bg-ghCard/60 backdrop-blur sticky top-0 z-50 px-4 py-3">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-9 h-9 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-ghL4">
+                    <i data-lucide="palette" class="w-5 h-5"></i>
+                </div>
+                <div>
+                    <h1 class="text-base font-bold text-white flex items-center gap-2">
+                        CustomYourGithub
+                        <span class="text-xs bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full font-medium">Studio v1.0</span>
+                    </h1>
+                    <p class="text-xs text-slate-400">Thiết kế & Tự động tạo Contribution Graph Art chuẩn 100%</p>
+                </div>
+            </div>
+
+            <div class="flex items-center space-x-3">
+                <a href="https://github.com/khanhlop11" target="_blank" class="text-xs text-slate-300 hover:text-white flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-ghBorder hover:border-slate-500 transition">
+                    <i data-lucide="github" class="w-4 h-4"></i>
+                    <span>khanhlop11</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <main class="flex-1 max-w-7xl mx-auto w-full p-4 md:p-6 space-y-6">
+
+        <!-- Toolbar Section -->
+        <div class="bg-ghCard border border-ghBorder rounded-xl p-4 shadow-xl space-y-4">
+            <div class="flex flex-wrap items-center justify-between gap-4">
+                
+                <!-- Left: Year & Mode Selector -->
+                <div class="flex flex-wrap items-center gap-3">
+                    <!-- Year Picker -->
+                    <div class="flex items-center space-x-2 bg-ghBg border border-ghBorder px-3 py-1.5 rounded-lg">
+                        <i data-lucide="calendar" class="w-4 h-4 text-slate-400"></i>
+                        <span class="text-xs font-medium text-slate-400">Năm:</span>
+                        <select id="yearSelector" class="bg-transparent text-sm font-semibold text-white focus:outline-none cursor-pointer">
+                            <option value="2026" class="bg-ghCard">2026</option>
+                            <option value="2025" class="bg-ghCard">2025</option>
+                            <option value="2024" selected class="bg-ghCard">2024</option>
+                            <option value="2023" class="bg-ghCard">2023</option>
+                            <option value="2022" class="bg-ghCard">2022</option>
+                        </select>
+                    </div>
+
+                    <!-- Tool Switcher -->
+                    <div class="flex bg-ghBg border border-ghBorder p-1 rounded-lg">
+                        <button id="toolBrush" class="tool-btn px-3 py-1.5 rounded-md text-xs font-medium flex items-center gap-1.5 transition bg-emerald-500/20 text-ghL4 border border-emerald-500/40">
+                            <i data-lucide="brush" class="w-3.5 h-3.5"></i>
+                            <span>Bút vẽ</span>
+                        </button>
+                        <button id="toolEraser" class="tool-btn px-3 py-1.5 rounded-md text-xs font-medium flex items-center gap-1.5 transition text-slate-400 hover:text-white">
+                            <i data-lucide="eraser" class="w-3.5 h-3.5"></i>
+                            <span>Tẩy</span>
+                        </button>
+                        <button id="toolText" class="tool-btn px-3 py-1.5 rounded-md text-xs font-medium flex items-center gap-1.5 transition text-slate-400 hover:text-white">
+                            <i data-lucide="type" class="w-3.5 h-3.5"></i>
+                            <span>Nhập chữ</span>
+                        </button>
+                    </div>
+
+                    <!-- Level/Intensity Picker -->
+                    <div class="flex items-center space-x-1.5 bg-ghBg border border-ghBorder px-2.5 py-1.5 rounded-lg">
+                        <span class="text-xs text-slate-400 mr-1">Độ đậm:</span>
+                        <button data-level="1" class="intensity-btn w-4 h-4 rounded-sm bg-ghL1 border border-transparent hover:scale-110 transition" title="Level 1 (1 commit)"></button>
+                        <button data-level="2" class="intensity-btn w-4 h-4 rounded-sm bg-ghL2 border border-transparent hover:scale-110 transition" title="Level 2 (2 commits)"></button>
+                        <button data-level="3" class="intensity-btn w-4 h-4 rounded-sm bg-ghL3 border border-transparent hover:scale-110 transition" title="Level 3 (3 commits)"></button>
+                        <button data-level="4" class="intensity-btn w-4 h-4 rounded-sm bg-ghL4 border-2 border-white scale-110 transition" title="Level 4 (5 commits)"></button>
+                    </div>
+                </div>
+
+                <!-- Right: Action Buttons -->
+                <div class="flex items-center gap-2">
+                    <button id="btnUndo" class="px-3 py-1.5 rounded-lg border border-ghBorder text-xs text-slate-300 hover:text-white hover:bg-slate-800 transition flex items-center gap-1">
+                        <i data-lucide="undo-2" class="w-3.5 h-3.5"></i>
+                        <span>Hoàn tác</span>
+                    </button>
+                    <button id="btnClear" class="px-3 py-1.5 rounded-lg border border-red-500/30 text-xs text-red-400 hover:bg-red-500/10 transition flex items-center gap-1">
+                        <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                        <span>Xóa hết</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Text Generator Expandable Bar -->
+            <div id="textToolPanel" class="hidden border-t border-ghBorder pt-4 space-y-3">
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-3 items-center">
+                    <div class="md:col-span-5 flex items-center space-x-2">
+                        <input id="textInput" type="text" placeholder="Nhập văn bản (vd: I <3 PTIT, HELLO...)" class="w-full bg-ghBg border border-ghBorder rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500 uppercase tracking-wider" maxlength="25">
+                    </div>
+                    
+                    <div class="md:col-span-4 flex items-center space-x-2">
+                        <span class="text-xs text-slate-400 whitespace-nowrap">Vị trí:</span>
+                        <input id="offsetSlider" type="range" min="0" max="45" value="5" class="w-full accent-emerald-500 cursor-pointer">
+                        <button id="btnCenterText" class="px-2.5 py-1.5 bg-ghBg border border-ghBorder hover:border-slate-500 rounded text-xs text-slate-300 whitespace-nowrap">
+                            Căn giữa
+                        </button>
+                    </div>
+
+                    <div class="md:col-span-3 flex items-center justify-end space-x-2">
+                        <button id="btnApplyText" class="w-full md:w-auto px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded-lg transition flex items-center justify-center gap-1.5">
+                            <i data-lucide="check" class="w-4 h-4"></i>
+                            <span>Áp dụng chữ</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Preset Icons -->
+                <div class="flex items-center gap-2 pt-1 text-xs text-slate-400">
+                    <span>Chèn nhanh biểu tượng:</span>
+                    <button data-preset="heart" class="preset-btn px-2.5 py-1 bg-ghBg border border-ghBorder hover:border-emerald-500 rounded text-slate-300 hover:text-white transition flex items-center gap-1">
+                        ❤️ Trái tim
+                    </button>
+                    <button data-preset="smile" class="preset-btn px-2.5 py-1 bg-ghBg border border-ghBorder hover:border-emerald-500 rounded text-slate-300 hover:text-white transition flex items-center gap-1">
+                        😊 Mặt cười
+                    </button>
+                    <button data-preset="star" class="preset-btn px-2.5 py-1 bg-ghBg border border-ghBorder hover:border-emerald-500 rounded text-slate-300 hover:text-white transition flex items-center gap-1">
+                        ⭐ Ngôi sao
+                    </button>
+                    <button data-preset="fire" class="preset-btn px-2.5 py-1 bg-ghBg border border-ghBorder hover:border-emerald-500 rounded text-slate-300 hover:text-white transition flex items-center gap-1">
+                        🔥 Ngọn lửa
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Canvas Board Section -->
+        <div class="bg-ghCard border border-ghBorder rounded-xl p-5 shadow-xl space-y-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <span id="statContributionsTitle" class="text-sm font-semibold text-white">0 contributions in 2024</span>
+                    <span id="safetyBadge" class="text-xs px-2.5 py-0.5 rounded-full font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+                        An toàn (< 800 commits)
+                    </span>
+                </div>
+                <div class="text-xs text-slate-400 flex items-center gap-1">
+                    <i data-lucide="info" class="w-3.5 h-3.5 text-slate-400"></i>
+                    <span>Kéo chuột trên bảng để tô màu liên tục</span>
+                </div>
+            </div>
+
+            <!-- Interactive Contribution Grid -->
+            <div class="calendar-grid-container bg-ghBg border border-ghBorder/70 rounded-lg p-4">
+                <div id="gridWrapper" class="inline-block min-w-full">
+                    <!-- Month Header Labels -->
+                    <div id="monthHeaders" class="flex text-[10px] text-slate-400 font-medium mb-1 pl-8">
+                        <!-- Dynamic Month Headers -->
+                    </div>
+
+                    <!-- Day Labels + Cells -->
+                    <div class="flex">
+                        <!-- Day labels: Sun, Mon, Tue, Wed, Thu, Fri, Sat -->
+                        <div class="flex flex-col justify-between text-[9px] text-slate-500 pr-2 h-[112px] font-mono leading-none select-none">
+                            <span></span>
+                            <span>Mon</span>
+                            <span></span>
+                            <span>Wed</span>
+                            <span></span>
+                            <span>Fri</span>
+                            <span></span>
+                        </div>
+
+                        <!-- 53 Columns of 7 Rows -->
+                        <div id="pixelGrid" class="grid grid-flow-col grid-rows-7 gap-[3px]">
+                            <!-- Cells injected by JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Legend & Stats Bar -->
+            <div class="flex flex-wrap items-center justify-between gap-4 pt-2 text-xs text-slate-400">
+                <div class="flex items-center gap-4">
+                    <div>Số ô đã tô: <span id="statActiveCells" class="font-bold text-white">0</span> / 365 ô</div>
+                    <div>Ước tính commit: <span id="statTotalCommits" class="font-bold text-white">0</span> commits</div>
+                </div>
+
+                <!-- GitHub Legend -->
+                <div class="flex items-center space-x-1.5 text-xs">
+                    <span>Ít hơn</span>
+                    <div class="w-3 h-3 rounded-[2px] bg-ghCard border border-white/5"></div>
+                    <div class="w-3 h-3 rounded-[2px] bg-ghL1"></div>
+                    <div class="w-3 h-3 rounded-[2px] bg-ghL2"></div>
+                    <div class="w-3 h-3 rounded-[2px] bg-ghL3"></div>
+                    <div class="w-3 h-3 rounded-[2px] bg-ghL4"></div>
+                    <span>Nhiều hơn</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Export & Generator Configuration -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            
+            <!-- Left 2 Cols: Generator Form -->
+            <div class="md:col-span-2 bg-ghCard border border-ghBorder rounded-xl p-5 shadow-xl space-y-4">
+                <div class="flex items-center space-x-2 border-b border-ghBorder pb-3">
+                    <i data-lucide="terminal" class="w-5 h-5 text-emerald-400"></i>
+                    <h2 class="text-sm font-bold text-white">Xuất Script Tự Động (1-Click Run)</h2>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-medium text-slate-300 mb-1">GitHub Username:</label>
+                        <input id="inputGithubUser" type="text" value="khanhlop11" class="w-full bg-ghBg border border-ghBorder rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-300 mb-1">Tên Repository:</label>
+                        <input id="inputRepoName" type="text" value="Art-2024" class="w-full bg-ghBg border border-ghBorder rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500">
+                    </div>
+                </div>
+
+                <!-- Platform Switcher -->
+                <div>
+                    <label class="block text-xs font-medium text-slate-300 mb-1.5">Hệ điều hành của bạn:</label>
+                    <div class="grid grid-cols-2 gap-3">
+                        <label class="flex items-center space-x-2 bg-ghBg border border-emerald-500/50 p-2.5 rounded-lg cursor-pointer">
+                            <input type="radio" name="osPlatform" value="windows" checked class="accent-emerald-500">
+                            <div class="text-xs">
+                                <p class="font-semibold text-white">Windows</p>
+                                <p class="text-slate-400 text-[10px]">PowerShell (.ps1)</p>
+                            </div>
+                        </label>
+                        <label class="flex items-center space-x-2 bg-ghBg border border-ghBorder p-2.5 rounded-lg cursor-pointer">
+                            <input type="radio" name="osPlatform" value="unix" class="accent-emerald-500">
+                            <div class="text-xs">
+                                <p class="font-semibold text-white">macOS / Linux</p>
+                                <p class="text-slate-400 text-[10px]">Bash Shell (.sh)</p>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Export Action Buttons -->
+                <div class="flex flex-wrap items-center gap-3 pt-2">
+                    <button id="btnDownloadScript" class="flex-1 py-2.5 px-4 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-lg transition shadow-lg flex items-center justify-center gap-2">
+                        <i data-lucide="download" class="w-4 h-4"></i>
+                        <span>Tải Script về máy</span>
+                    </button>
+                    <button id="btnCopyScript" class="py-2.5 px-4 bg-ghBg border border-ghBorder hover:border-slate-400 text-slate-300 hover:text-white text-xs font-semibold rounded-lg transition flex items-center gap-2">
+                        <i data-lucide="copy" class="w-4 h-4"></i>
+                        <span>Copy mã Script</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Right 1 Col: Quick Step-by-Step Guide -->
+            <div class="bg-ghCard border border-ghBorder rounded-xl p-5 shadow-xl space-y-4">
+                <div class="flex items-center space-x-2 border-b border-ghBorder pb-3">
+                    <i data-lucide="shield-check" class="w-5 h-5 text-emerald-400"></i>
+                    <h2 class="text-sm font-bold text-white">3 Bước Chạy An Toàn</h2>
+                </div>
+
+                <div class="space-y-3 text-xs text-slate-300">
+                    <div class="flex items-start space-x-2.5">
+                        <span class="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 flex items-center justify-center shrink-0 font-bold text-[10px]">1</span>
+                        <p>Tạo 1 repo trống trên GitHub với tên vừa nhập (khuyên chọn <strong>Private</strong> để profile gọn gàng).</p>
+                    </div>
+
+                    <div class="flex items-start space-x-2.5">
+                        <span class="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 flex items-center justify-center shrink-0 font-bold text-[10px]">2</span>
+                        <p>Mở PowerShell trên máy và chạy file vừa tải: <br><code class="bg-ghBg px-1.5 py-0.5 rounded text-emerald-400 font-mono text-[11px] mt-1 inline-block">.\draw_art.ps1</code></p>
+                    </div>
+
+                    <div class="flex items-start space-x-2.5">
+                        <span class="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 flex items-center justify-center shrink-0 font-bold text-[10px]">3</span>
+                        <p>Vào trang cá nhân, bấm <strong>Contribution settings</strong> -> bật <strong>Private contributions</strong> để xem tranh!</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-ghBorder py-4 text-center text-xs text-slate-500">
+        <p>CustomYourGithub &bull; Open-source Project by <a href="https://github.com/khanhlop11" class="text-slate-400 hover:text-white underline">khanhlop11</a> &bull; MIT License</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="fontData.js"></script>
+    <script src="app.js"></script>
+    <script>
+        // Init Lucide Icons
+        lucide.createIcons();
+    </script>
+</body>
+</html>
