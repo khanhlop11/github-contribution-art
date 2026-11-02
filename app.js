@@ -682,6 +682,13 @@ document.addEventListener('DOMContentLoaded', () => {
         updateLivePreview();
     };
 
+    const handleOffsetX = (e) => {
+        lblOffsetXEl.textContent = e.target.value;
+        updateLivePreview();
+    };
+    offsetSliderEl.addEventListener('input', handleOffsetX);
+    offsetSliderEl.addEventListener('change', handleOffsetX);
+
     offsetYSliderEl.addEventListener('input', handleOffsetY);
     offsetYSliderEl.addEventListener('change', handleOffsetY);
 
