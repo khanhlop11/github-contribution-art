@@ -9,19 +9,32 @@ let isMouseDown = false;
 
 // 53 columns x 7 rows (levels: 0, 1, 2, 3, 4)
 let gridData = Array(53).fill(null).map(() => Array(7).fill(0));
+let previewSet = new Set(); // Stores "col,row" strings for active red preview
 let historyStack = [];
 
 // DOM Elements
 const pixelGridEl = document.getElementById('pixelGrid');
 const monthHeadersEl = document.getElementById('monthHeaders');
-const yearSelectorEl = document.getElementById('yearSelector');
+const yearInputEl = document.getElementById('yearInput');
+const btnPrevYearEl = document.getElementById('btnPrevYear');
+const btnNextYearEl = document.getElementById('btnNextYear');
+
 const statContributionsTitleEl = document.getElementById('statContributionsTitle');
 const statActiveCellsEl = document.getElementById('statActiveCells');
 const statTotalCommitsEl = document.getElementById('statTotalCommits');
 const safetyBadgeEl = document.getElementById('safetyBadge');
+
 const textToolPanelEl = document.getElementById('textToolPanel');
 const textInputEl = document.getElementById('textInput');
+const textLengthEl = document.getElementById('textLength');
+const fontSizeSelectorEl = document.getElementById('fontSizeSelector');
+const wrapperOffsetYEl = document.getElementById('wrapperOffsetY');
 const offsetSliderEl = document.getElementById('offsetSlider');
+const offsetYSliderEl = document.getElementById('offsetYSlider');
+const spacingSliderEl = document.getElementById('spacingSlider');
+const lblOffsetXEl = document.getElementById('lblOffsetX');
+const lblOffsetYEl = document.getElementById('lblOffsetY');
+const lblSpacingEl = document.getElementById('lblSpacing');
 
 // Level to Commits mapping
 const LEVEL_COMMITS = {
@@ -46,6 +59,11 @@ function getFirstSundayOfYear(year) {
 
 function initCalendar(year) {
     currentYear = parseInt(year);
+    if (isNaN(currentYear) || currentYear < 2000 || currentYear > 2099) {
+        currentYear = 2024;
+    }
+    yearInputEl.value = currentYear;
+
     pixelGridEl.innerHTML = '';
     monthHeadersEl.innerHTML = '';
 
@@ -67,6 +85,7 @@ function initCalendar(year) {
             }
 
             const cell = document.createElement('div');
+            cell.id = `cell-${c}-${r}`;
             cell.className = `graph-cell level-${gridData[c][r]}`;
             cell.dataset.col = c;
             cell.dataset.row = r;
@@ -85,9 +104,9 @@ function initCalendar(year) {
                 cell.title = `${dateStr} - ${LEVEL_COMMITS[gridData[c][r]]} commits`;
             }
 
-            // Mouse Events for Drawing
+            // Mouse Events for Freehand Drawing
             cell.addEventListener('mousedown', (e) => {
-                if (!isCurrentYear) return;
+                if (!isCurrentYear || activeTool === 'text') return;
                 e.preventDefault();
                 isMouseDown = true;
                 saveHistory();
@@ -95,7 +114,7 @@ function initCalendar(year) {
             });
 
             cell.addEventListener('mouseenter', () => {
-                if (!isCurrentYear || !isMouseDown) return;
+                if (!isCurrentYear || !isMouseDown || activeTool === 'text') return;
                 applyToolToCell(c, r, cell);
             });
 
@@ -118,6 +137,7 @@ function initCalendar(year) {
     }
 
     updateStats();
+    updateLivePreview();
 }
 
 window.addEventListener('mouseup', () => {
@@ -135,7 +155,6 @@ function applyToolToCell(c, r, cellElement) {
         gridData[c][r] = activeIntensity;
     }
 
-    // Update classes
     cellElement.className = `graph-cell level-${gridData[c][r]}`;
     updateStats();
 }
@@ -179,6 +198,7 @@ function saveHistory() {
 function undo() {
     if (historyStack.length === 0) return;
     gridData = historyStack.pop();
+    clearPreview();
     refreshGridUI();
     updateStats();
 }
@@ -190,6 +210,7 @@ function clearAll() {
             gridData[c][r] = 0;
         }
     }
+    clearPreview();
     refreshGridUI();
     updateStats();
 }
@@ -201,90 +222,156 @@ function refreshGridUI() {
         const r = parseInt(cell.dataset.row);
         if (!cell.classList.contains('cell-disabled')) {
             cell.className = `graph-cell level-${gridData[c][r]}`;
+            if (previewSet.has(`${c},${r}`)) {
+                cell.classList.add('cell-preview');
+            }
         }
     });
 }
 
 // ============================================================
-// 3. TEXT TO PIXEL ART ENGINE
+// 3. TEXT ENGINE & REAL-TIME RED LIVE PREVIEW
 // ============================================================
 
-function buildTextColumns(text) {
+function getActiveFontTable() {
+    const size = parseInt(fontSizeSelectorEl.value);
+    return (size === 5) ? PIXEL_FONTS_5 : PIXEL_FONTS_7;
+}
+
+function buildTextColumns(text, spacing) {
+    const fontTable = getActiveFontTable();
     const upper = text.toUpperCase();
     const columns = [];
+    const fontHeight = parseInt(fontSizeSelectorEl.value);
+    const emptyRow = '.'.repeat(fontHeight).split('');
     let i = 0;
 
     while (i < upper.length) {
-        // Check for special multi-char symbols like <3
-        if (upper.substring(i, i + 2) === '<3') {
-            const matrix = PIXEL_FONTS['<3'];
+        // Special check for <3 (Heart)
+        if (upper.substring(i, i + 2) === '<3' && '<3' in fontTable) {
+            const matrix = fontTable['<3'];
             for (let c = 0; c < matrix[0].length; c++) {
                 columns.push(matrix.map(row => row[c]));
             }
-            columns.push(['.', '.', '.', '.', '.', '.', '.']); // 1-col gap
+            for (let s = 0; s < spacing; s++) {
+                columns.push([...emptyRow]);
+            }
             i += 2;
             continue;
         }
 
         const char = upper[i];
-        if (char in PIXEL_FONTS) {
-            const matrix = PIXEL_FONTS[char];
+        if (char in fontTable) {
+            const matrix = fontTable[char];
             for (let c = 0; c < matrix[0].length; c++) {
                 columns.push(matrix.map(row => row[c]));
             }
-            columns.push(['.', '.', '.', '.', '.', '.', '.']); // 1-col gap
+            for (let s = 0; s < spacing; s++) {
+                columns.push([...emptyRow]);
+            }
         }
         i++;
     }
 
-    // Remove trailing gap
-    if (columns.length > 0) columns.pop();
+    // Remove trailing spacing
+    for (let s = 0; s < spacing; s++) {
+        if (columns.length > 0) columns.pop();
+    }
     return columns;
 }
 
-function applyTextToGrid() {
+function clearPreview() {
+    previewSet.forEach(coord => {
+        const [c, r] = coord.split(',');
+        const cell = document.getElementById(`cell-${c}-${r}`);
+        if (cell) {
+            cell.classList.remove('cell-preview');
+        }
+    });
+    previewSet.clear();
+}
+
+function updateLivePreview() {
+    clearPreview();
+    if (activeTool !== 'text') return;
+
     const text = textInputEl.value.trim();
     if (!text) return;
 
-    saveHistory();
-    const textColumns = buildTextColumns(text);
-    const offset = parseInt(offsetSliderEl.value);
+    const spacing = parseInt(spacingSliderEl.value);
+    const textColumns = buildTextColumns(text, spacing);
+    const offsetX = parseInt(offsetSliderEl.value);
+    const fontHeight = parseInt(fontSizeSelectorEl.value);
+    const offsetY = (fontHeight === 5) ? parseInt(offsetYSliderEl.value) : 0;
 
-    // Apply to gridData
     for (let idx = 0; idx < textColumns.length; idx++) {
-        const gridCol = offset + idx;
+        const gridCol = offsetX + idx;
         if (gridCol >= 53) break;
 
-        for (let r = 0; r < 7; r++) {
+        for (let r = 0; r < fontHeight; r++) {
+            const gridRow = offsetY + r;
+            if (gridRow >= 7) break;
+
             if (textColumns[idx][r] === '#') {
-                gridData[gridCol][r] = activeIntensity;
+                const cell = document.getElementById(`cell-${gridCol}-${gridRow}`);
+                if (cell && !cell.classList.contains('cell-disabled')) {
+                    cell.classList.add('cell-preview');
+                    previewSet.add(`${gridCol},${gridRow}`);
+                }
             }
         }
     }
-
-    refreshGridUI();
-    updateStats();
 }
 
-function centerText() {
+function applyTextToGrid() {
+    if (previewSet.size === 0) return;
+
+    saveHistory();
+    previewSet.forEach(coord => {
+        const [c, r] = coord.split(',').map(Number);
+        gridData[c][r] = activeIntensity;
+    });
+
+    clearPreview();
+    refreshGridUI();
+    updateStats();
+    textInputEl.value = '';
+    textLengthEl.textContent = '0/25';
+}
+
+function calculateTextWidth() {
     const text = textInputEl.value.trim();
-    if (!text) return;
-    const textColumns = buildTextColumns(text);
-    const textWidth = textColumns.length;
-    const optimalOffset = Math.max(0, Math.floor((53 - textWidth) / 2));
-    offsetSliderEl.value = optimalOffset;
+    if (!text) return 0;
+    const spacing = parseInt(spacingSliderEl.value);
+    const textColumns = buildTextColumns(text, spacing);
+    return textColumns.length;
+}
+
+function alignText(mode) {
+    const textWidth = calculateTextWidth();
+    if (textWidth === 0) return;
+
+    if (mode === 'center') {
+        offsetSliderEl.value = Math.max(0, Math.floor((53 - textWidth) / 2));
+    } else if (mode === 'left') {
+        offsetSliderEl.value = 2;
+    } else if (mode === 'right') {
+        offsetSliderEl.value = Math.max(0, 53 - textWidth - 2);
+    }
+    lblOffsetXEl.textContent = offsetSliderEl.value;
+    updateLivePreview();
 }
 
 function insertPreset(presetKey) {
     if (!(presetKey in PRESET_ICONS)) return;
     saveHistory();
     const preset = PRESET_ICONS[presetKey];
-    const offset = parseInt(offsetSliderEl.value);
+    const offsetX = parseInt(offsetSliderEl.value);
 
     for (let c = 0; c < preset.width; c++) {
-        const gridCol = offset + c;
+        const gridCol = offsetX + c;
         if (gridCol >= 53) break;
-        for (let r = 0; r < 7; r++) {
+        for (let r = 0; r < preset.height; r++) {
             if (preset.matrix[r][c] === '#') {
                 gridData[gridCol][r] = activeIntensity;
             }
@@ -303,7 +390,6 @@ function generatePowerShellScript(user, repo, year) {
     const firstSunday = getFirstSundayOfYear(year);
     const dateFormatted = firstSunday.toISOString().split('T')[0];
 
-    // Collect active cells
     let cellCode = "";
     for (let c = 0; c < 53; c++) {
         for (let r = 0; r < 7; r++) {
@@ -408,7 +494,6 @@ for item in "\${CELLS[@]}"; do
     IFS=',' read -r c r commits <<< "$item"
     TOTAL_DAYS=$((c * 7 + r))
     
-    # Calculate target date in macOS and Linux
     if date -v+1d >/dev/null 2>&1; then
         CELL_DATE=$(date -j -v+\${TOTAL_DAYS}d -f "%Y-%m-%d %H:%M:%S" "$FIRST_SUNDAY" "+%Y-%m-%dT%H:%M:%S")
     else
@@ -477,9 +562,19 @@ function copyScript() {
 // ============================================================
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Year Selector
-    yearSelectorEl.addEventListener('change', (e) => {
-        initCalendar(e.target.value);
+    // Year Input and Buttons
+    yearInputEl.addEventListener('change', (e) => {
+        initCalendar(parseInt(e.target.value));
+    });
+
+    btnPrevYearEl.addEventListener('click', () => {
+        const y = parseInt(yearInputEl.value) - 1;
+        initCalendar(y);
+    });
+
+    btnNextYearEl.addEventListener('click', () => {
+        const y = parseInt(yearInputEl.value) + 1;
+        initCalendar(y);
     });
 
     // Tool Buttons
@@ -502,8 +597,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (tool === 'text') {
             textToolPanelEl.classList.remove('hidden');
+            updateLivePreview();
         } else {
             textToolPanelEl.classList.add('hidden');
+            clearPreview();
         }
     }
 
@@ -529,9 +626,53 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('btnUndo').addEventListener('click', undo);
     document.getElementById('btnClear').addEventListener('click', clearAll);
 
-    // Text Engine Buttons
+    // Text Engine Real-Time Input & Controls
+    textInputEl.addEventListener('input', (e) => {
+        textLengthEl.textContent = `${e.target.value.length}/25`;
+        updateLivePreview();
+    });
+
+    fontSizeSelectorEl.addEventListener('change', () => {
+        const size = parseInt(fontSizeSelectorEl.value);
+        if (size === 5) {
+            wrapperOffsetYEl.classList.remove('opacity-50', 'pointer-events-none');
+        } else {
+            wrapperOffsetYEl.classList.add('opacity-50', 'pointer-events-none');
+            offsetYSliderEl.value = 0;
+            lblOffsetYEl.textContent = '0 (Tràn ô)';
+        }
+        updateLivePreview();
+    });
+
+    offsetSliderEl.addEventListener('input', (e) => {
+        lblOffsetXEl.textContent = e.target.value;
+        updateLivePreview();
+    });
+
+    offsetYSliderEl.addEventListener('input', (e) => {
+        const val = parseInt(e.target.value);
+        const labels = ['0 (Trên cùng)', '1 (Giữa hàng)', '2 (Dưới đáy)'];
+        lblOffsetYEl.textContent = labels[val] || val;
+        updateLivePreview();
+    });
+
+    spacingSliderEl.addEventListener('input', (e) => {
+        lblSpacingEl.textContent = `${e.target.value} ô`;
+        updateLivePreview();
+    });
+
+    // Text Alignment buttons
+    document.getElementById('btnCenterText').addEventListener('click', () => alignText('center'));
+    document.getElementById('btnAlignLeft').addEventListener('click', () => alignText('left'));
+    document.getElementById('btnAlignRight').addEventListener('click', () => alignText('right'));
+
+    // Apply & Cancel Preview
     document.getElementById('btnApplyText').addEventListener('click', applyTextToGrid);
-    document.getElementById('btnCenterText').addEventListener('click', centerText);
+    document.getElementById('btnCancelPreview').addEventListener('click', () => {
+        textInputEl.value = '';
+        textLengthEl.textContent = '0/25';
+        clearPreview();
+    });
     
     // Preset Buttons
     document.querySelectorAll('.preset-btn').forEach(btn => {
@@ -545,4 +686,3 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initial render
     initCalendar(2024);
 });
-

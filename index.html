@@ -41,7 +41,7 @@
                 <div>
                     <h1 class="text-base font-bold text-white flex items-center gap-2">
                         CustomYourGithub
-                        <span class="text-xs bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full font-medium">Studio v1.0</span>
+                        <span class="text-xs bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full font-medium">Studio v1.2</span>
                     </h1>
                     <p class="text-xs text-slate-400">Thiết kế & Tự động tạo Contribution Graph Art chuẩn 100%</p>
                 </div>
@@ -63,19 +63,20 @@
         <div class="bg-ghCard border border-ghBorder rounded-xl p-4 shadow-xl space-y-4">
             <div class="flex flex-wrap items-center justify-between gap-4">
                 
-                <!-- Left: Year & Mode Selector -->
+                <!-- Left: Year Input & Tool Selector -->
                 <div class="flex flex-wrap items-center gap-3">
-                    <!-- Year Picker -->
-                    <div class="flex items-center space-x-2 bg-ghBg border border-ghBorder px-3 py-1.5 rounded-lg">
+                    
+                    <!-- Flexible Year Picker -->
+                    <div class="flex items-center space-x-1.5 bg-ghBg border border-ghBorder px-2.5 py-1 rounded-lg">
                         <i data-lucide="calendar" class="w-4 h-4 text-slate-400"></i>
                         <span class="text-xs font-medium text-slate-400">Năm:</span>
-                        <select id="yearSelector" class="bg-transparent text-sm font-semibold text-white focus:outline-none cursor-pointer">
-                            <option value="2026" class="bg-ghCard">2026</option>
-                            <option value="2025" class="bg-ghCard">2025</option>
-                            <option value="2024" selected class="bg-ghCard">2024</option>
-                            <option value="2023" class="bg-ghCard">2023</option>
-                            <option value="2022" class="bg-ghCard">2022</option>
-                        </select>
+                        <button id="btnPrevYear" class="p-1 rounded hover:bg-slate-800 text-slate-300 hover:text-white transition" title="Năm trước">
+                            <i data-lucide="chevron-left" class="w-3.5 h-3.5"></i>
+                        </button>
+                        <input id="yearInput" type="number" min="2008" max="2050" value="2024" class="w-16 bg-transparent text-center text-sm font-bold text-emerald-400 focus:outline-none font-mono">
+                        <button id="btnNextYear" class="p-1 rounded hover:bg-slate-800 text-slate-300 hover:text-white transition" title="Năm sau">
+                            <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+                        </button>
                     </div>
 
                     <!-- Tool Switcher -->
@@ -118,31 +119,76 @@
             </div>
 
             <!-- Text Generator Expandable Bar -->
-            <div id="textToolPanel" class="hidden border-t border-ghBorder pt-4 space-y-3">
+            <div id="textToolPanel" class="hidden border-t border-ghBorder pt-4 space-y-4">
+                
+                <!-- Row 1: Text Input & Font Size & Controls -->
                 <div class="grid grid-cols-1 md:grid-cols-12 gap-3 items-center">
+                    
+                    <!-- Text Box -->
                     <div class="md:col-span-5 flex items-center space-x-2">
-                        <input id="textInput" type="text" placeholder="Nhập văn bản (vd: I <3 PTIT, HELLO...)" class="w-full bg-ghBg border border-ghBorder rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500 uppercase tracking-wider" maxlength="25">
+                        <div class="relative w-full">
+                            <input id="textInput" type="text" placeholder="Nhập chữ (vd: I <3 PTIT, HELLO...)" class="w-full bg-ghBg border border-ghBorder rounded-lg pl-3 pr-8 py-2 text-sm text-white focus:outline-none focus:border-emerald-500 uppercase tracking-wider" maxlength="25">
+                            <span class="absolute right-2.5 top-2.5 text-[10px] text-slate-500 font-mono" id="textLength">0/25</span>
+                        </div>
                     </div>
                     
-                    <div class="md:col-span-4 flex items-center space-x-2">
-                        <span class="text-xs text-slate-400 whitespace-nowrap">Vị trí:</span>
-                        <input id="offsetSlider" type="range" min="0" max="45" value="5" class="w-full accent-emerald-500 cursor-pointer">
-                        <button id="btnCenterText" class="px-2.5 py-1.5 bg-ghBg border border-ghBorder hover:border-slate-500 rounded text-xs text-slate-300 whitespace-nowrap">
-                            Căn giữa
-                        </button>
+                    <!-- Font Size Selector -->
+                    <div class="md:col-span-3 flex items-center space-x-2 bg-ghBg border border-ghBorder px-3 py-1.5 rounded-lg">
+                        <span class="text-xs text-slate-400 whitespace-nowrap">Cỡ chữ:</span>
+                        <select id="fontSizeSelector" class="bg-transparent text-xs font-semibold text-white focus:outline-none cursor-pointer w-full">
+                            <option value="7" selected class="bg-ghCard">Lớn (7 hàng - tràn ô)</option>
+                            <option value="5" class="bg-ghCard">Vừa (5 hàng - gọn gàng)</option>
+                        </select>
                     </div>
 
-                    <div class="md:col-span-3 flex items-center justify-end space-x-2">
-                        <button id="btnApplyText" class="w-full md:w-auto px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded-lg transition flex items-center justify-center gap-1.5">
+                    <!-- Action Buttons -->
+                    <div class="md:col-span-4 flex items-center justify-end space-x-2">
+                        <button id="btnApplyText" class="flex-1 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-lg transition flex items-center justify-center gap-1.5 shadow-md">
                             <i data-lucide="check" class="w-4 h-4"></i>
                             <span>Áp dụng chữ</span>
+                        </button>
+                        <button id="btnCancelPreview" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium rounded-lg transition" title="Xóa xem trước">
+                            Hủy
                         </button>
                     </div>
                 </div>
 
-                <!-- Preset Icons -->
-                <div class="flex items-center gap-2 pt-1 text-xs text-slate-400">
-                    <span>Chèn nhanh biểu tượng:</span>
+                <!-- Row 2: Sliders for X-Offset, Y-Offset, Letter Spacing -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-ghBg/60 border border-ghBorder/70 p-3 rounded-lg text-xs">
+                    
+                    <!-- X Position (Horizontal) -->
+                    <div class="space-y-1">
+                        <div class="flex justify-between text-slate-400">
+                            <span>Vị trí ngang (Cột): <strong id="lblOffsetX" class="text-emerald-400 font-mono">5</strong></span>
+                            <div class="flex gap-1.5 text-[10px]">
+                                <button id="btnAlignLeft" class="text-slate-400 hover:text-white underline">Trái</button>
+                                <button id="btnCenterText" class="text-emerald-400 hover:text-white underline font-semibold">Giữa</button>
+                                <button id="btnAlignRight" class="text-slate-400 hover:text-white underline">Phải</button>
+                            </div>
+                        </div>
+                        <input id="offsetSlider" type="range" min="0" max="52" value="5" class="w-full accent-emerald-500 cursor-pointer">
+                    </div>
+
+                    <!-- Y Position (Vertical - For 5-row Font) -->
+                    <div id="wrapperOffsetY" class="space-y-1 opacity-50 pointer-events-none transition">
+                        <div class="flex justify-between text-slate-400">
+                            <span>Vị trí dọc (Hàng): <strong id="lblOffsetY" class="text-emerald-400 font-mono">1 (Giữa)</strong></span>
+                        </div>
+                        <input id="offsetYSlider" type="range" min="0" max="2" value="1" class="w-full accent-emerald-500 cursor-pointer">
+                    </div>
+
+                    <!-- Letter Spacing -->
+                    <div class="space-y-1">
+                        <div class="flex justify-between text-slate-400">
+                            <span>Khoảng cách chữ: <strong id="lblSpacing" class="text-emerald-400 font-mono">1 ô</strong></span>
+                        </div>
+                        <input id="spacingSlider" type="range" min="0" max="4" value="1" class="w-full accent-emerald-500 cursor-pointer">
+                    </div>
+                </div>
+
+                <!-- Row 3: Preset Icons -->
+                <div class="flex flex-wrap items-center gap-2 pt-1 text-xs text-slate-400">
+                    <span>Chèn biểu tượng:</span>
                     <button data-preset="heart" class="preset-btn px-2.5 py-1 bg-ghBg border border-ghBorder hover:border-emerald-500 rounded text-slate-300 hover:text-white transition flex items-center gap-1">
                         ❤️ Trái tim
                     </button>
@@ -155,6 +201,10 @@
                     <button data-preset="fire" class="preset-btn px-2.5 py-1 bg-ghBg border border-ghBorder hover:border-emerald-500 rounded text-slate-300 hover:text-white transition flex items-center gap-1">
                         🔥 Ngọn lửa
                     </button>
+                    <span class="text-[11px] text-red-400 ml-auto flex items-center gap-1">
+                        <span class="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse"></span>
+                        Ô màu đỏ nhấp nháy là bản xem trước trực tiếp (Live Preview)
+                    </span>
                 </div>
             </div>
         </div>
@@ -170,7 +220,7 @@
                 </div>
                 <div class="text-xs text-slate-400 flex items-center gap-1">
                     <i data-lucide="info" class="w-3.5 h-3.5 text-slate-400"></i>
-                    <span>Kéo chuột trên bảng để tô màu liên tục</span>
+                    <span>Kéo chuột trên bảng để vẽ tự do &bull; Nhập chữ để xem trước</span>
                 </div>
             </div>
 
@@ -219,6 +269,10 @@
                     <div class="w-3 h-3 rounded-[2px] bg-ghL3"></div>
                     <div class="w-3 h-3 rounded-[2px] bg-ghL4"></div>
                     <span>Nhiều hơn</span>
+                    <div class="ml-3 pl-3 border-l border-ghBorder flex items-center space-x-1.5">
+                        <div class="w-3 h-3 rounded-[2px] bg-red-500 animate-pulse"></div>
+                        <span class="text-red-400">Xem trước (Preview)</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -236,11 +290,11 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-xs font-medium text-slate-300 mb-1">GitHub Username:</label>
-                        <input id="inputGithubUser" type="text" value="khanhlop11" class="w-full bg-ghBg border border-ghBorder rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500">
+                        <input id="inputGithubUser" type="text" value="khanhlop11" class="w-full bg-ghBg border border-ghBorder rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500 font-mono">
                     </div>
                     <div>
                         <label class="block text-xs font-medium text-slate-300 mb-1">Tên Repository:</label>
-                        <input id="inputRepoName" type="text" value="Art-2024" class="w-full bg-ghBg border border-ghBorder rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500">
+                        <input id="inputRepoName" type="text" value="Art-2024" class="w-full bg-ghBg border border-ghBorder rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500 font-mono">
                     </div>
                 </div>
 
@@ -321,4 +375,3 @@
     </script>
 </body>
 </html>
-

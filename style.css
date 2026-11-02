@@ -33,7 +33,7 @@ body {
 }
 
 .graph-cell:hover:not(.cell-disabled) {
-    outline: 1px solid rgba(255, 255, 255, 0.5);
+    outline: 1px solid rgba(255, 255, 255, 0.6);
     transform: scale(1.18);
     z-index: 10;
 }
@@ -50,6 +50,27 @@ body {
 .level-2 { background-color: var(--color-calendar-graph-day-L2-bg); }
 .level-3 { background-color: var(--color-calendar-graph-day-L3-bg); }
 .level-4 { background-color: var(--color-calendar-graph-day-L4-bg); }
+
+/* Live Preview (Glowing Red Ghost Overlay) */
+.cell-preview {
+    background-color: #ef4444 !important;
+    outline: 2px solid #fca5a5 !important;
+    box-shadow: 0 0 8px rgba(239, 68, 68, 0.8) !important;
+    z-index: 25;
+    position: relative;
+    animation: pulse-preview 0.8s ease-in-out infinite alternate;
+}
+
+@keyframes pulse-preview {
+    0% {
+        transform: scale(1.0);
+        opacity: 0.85;
+    }
+    100% {
+        transform: scale(1.15);
+        opacity: 1;
+    }
+}
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
@@ -69,4 +90,3 @@ body {
 ::-webkit-scrollbar-thumb:hover {
     background: #8b949e;
 }
-
