@@ -170,11 +170,16 @@
                     </div>
 
                     <!-- Y Position (Vertical - For 5-row Font) -->
-                    <div id="wrapperOffsetY" class="space-y-1 opacity-50 pointer-events-none transition">
+                    <div id="wrapperOffsetY" class="space-y-1 transition">
                         <div class="flex justify-between text-slate-400">
-                            <span>Vị trí dọc (Hàng): <strong id="lblOffsetY" class="text-emerald-400 font-mono">1 (Giữa)</strong></span>
+                            <span>Vị trí dọc: <strong id="lblOffsetY" class="text-emerald-400 font-mono">1 (Giữa)</strong></span>
+                            <div class="flex gap-1.5 text-[10px]">
+                                <button id="btnAlignTop" type="button" class="text-slate-400 hover:text-white underline">Trên</button>
+                                <button id="btnAlignMiddle" type="button" class="text-emerald-400 hover:text-white underline font-semibold">Giữa</button>
+                                <button id="btnAlignBottom" type="button" class="text-slate-400 hover:text-white underline">Dưới</button>
+                            </div>
                         </div>
-                        <input id="offsetYSlider" type="range" min="0" max="2" value="1" class="w-full accent-emerald-500 cursor-pointer">
+                        <input id="offsetYSlider" type="range" min="0" max="2" value="1" step="1" class="w-full accent-emerald-500 cursor-pointer">
                     </div>
 
                     <!-- Letter Spacing -->

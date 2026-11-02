@@ -10,6 +10,7 @@ let isMouseDown = false;
 // 53 columns x 7 rows (levels: 0, 1, 2, 3, 4)
 let gridData = Array(53).fill(null).map(() => Array(7).fill(0));
 let previewSet = new Set(); // Stores "col,row" strings for active red preview
+let activePresetKey = null; // Tracks active preset being previewed
 let historyStack = [];
 
 // DOM Elements
@@ -295,21 +296,45 @@ function updateLivePreview() {
     clearPreview();
     if (activeTool !== 'text') return;
 
+    const offsetX = parseInt(offsetSliderEl.value);
+    const offsetY = parseInt(offsetYSliderEl.value) || 0;
+
+    // Mode 1: Active Preset Icon (Heart, Smile, Star, Fire)
+    if (activePresetKey && activePresetKey in PRESET_ICONS) {
+        const preset = PRESET_ICONS[activePresetKey];
+        for (let c = 0; c < preset.width; c++) {
+            const gridCol = offsetX + c;
+            if (gridCol >= 53) break;
+            for (let r = 0; r < preset.height; r++) {
+                const gridRow = offsetY + r;
+                if (gridRow >= 7) break;
+                if (preset.matrix[r][c] === '#') {
+                    const cell = document.getElementById(`cell-${gridCol}-${gridRow}`);
+                    if (cell && !cell.classList.contains('cell-disabled')) {
+                        cell.classList.add('cell-preview');
+                        previewSet.add(`${gridCol},${gridRow}`);
+                    }
+                }
+            }
+        }
+        return;
+    }
+
+    // Mode 2: Text input
     const text = textInputEl.value.trim();
     if (!text) return;
 
     const spacing = parseInt(spacingSliderEl.value);
     const textColumns = buildTextColumns(text, spacing);
-    const offsetX = parseInt(offsetSliderEl.value);
     const fontHeight = parseInt(fontSizeSelectorEl.value);
-    const offsetY = (fontHeight === 5) ? parseInt(offsetYSliderEl.value) : 0;
+    const textOffsetY = (fontHeight === 5) ? offsetY : 0;
 
     for (let idx = 0; idx < textColumns.length; idx++) {
         const gridCol = offsetX + idx;
         if (gridCol >= 53) break;
 
         for (let r = 0; r < fontHeight; r++) {
-            const gridRow = offsetY + r;
+            const gridRow = textOffsetY + r;
             if (gridRow >= 7) break;
 
             if (textColumns[idx][r] === '#') {
@@ -337,6 +362,10 @@ function applyTextToGrid() {
     updateStats();
     textInputEl.value = '';
     textLengthEl.textContent = '0/25';
+    activePresetKey = null;
+    document.querySelectorAll('.preset-btn').forEach(btn => {
+        btn.classList.remove('border-emerald-500', 'bg-emerald-500/20', 'text-white');
+    });
 }
 
 function calculateTextWidth() {
@@ -348,38 +377,41 @@ function calculateTextWidth() {
 }
 
 function alignText(mode) {
-    const textWidth = calculateTextWidth();
-    if (textWidth === 0) return;
+    let itemWidth = 0;
+    if (activePresetKey && activePresetKey in PRESET_ICONS) {
+        itemWidth = PRESET_ICONS[activePresetKey].width;
+    } else {
+        itemWidth = calculateTextWidth();
+    }
+    if (itemWidth === 0) return;
 
     if (mode === 'center') {
-        offsetSliderEl.value = Math.max(0, Math.floor((53 - textWidth) / 2));
+        offsetSliderEl.value = Math.max(0, Math.floor((53 - itemWidth) / 2));
     } else if (mode === 'left') {
         offsetSliderEl.value = 2;
     } else if (mode === 'right') {
-        offsetSliderEl.value = Math.max(0, 53 - textWidth - 2);
+        offsetSliderEl.value = Math.max(0, 53 - itemWidth - 2);
     }
     lblOffsetXEl.textContent = offsetSliderEl.value;
     updateLivePreview();
 }
 
-function insertPreset(presetKey) {
+function selectPresetForPreview(presetKey) {
     if (!(presetKey in PRESET_ICONS)) return;
-    saveHistory();
-    const preset = PRESET_ICONS[presetKey];
-    const offsetX = parseInt(offsetSliderEl.value);
+    activePresetKey = presetKey;
+    textInputEl.value = '';
+    textLengthEl.textContent = '0/25';
 
-    for (let c = 0; c < preset.width; c++) {
-        const gridCol = offsetX + c;
-        if (gridCol >= 53) break;
-        for (let r = 0; r < preset.height; r++) {
-            if (preset.matrix[r][c] === '#') {
-                gridData[gridCol][r] = activeIntensity;
-            }
+    // Highlight active preset button
+    document.querySelectorAll('.preset-btn').forEach(btn => {
+        if (btn.dataset.preset === presetKey) {
+            btn.classList.add('border-emerald-500', 'bg-emerald-500/20', 'text-white');
+        } else {
+            btn.classList.remove('border-emerald-500', 'bg-emerald-500/20', 'text-white');
         }
-    }
+    });
 
-    refreshGridUI();
-    updateStats();
+    updateLivePreview();
 }
 
 // ============================================================
@@ -628,31 +660,47 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Text Engine Real-Time Input & Controls
     textInputEl.addEventListener('input', (e) => {
+        activePresetKey = null;
+        document.querySelectorAll('.preset-btn').forEach(btn => {
+            btn.classList.remove('border-emerald-500', 'bg-emerald-500/20', 'text-white');
+        });
         textLengthEl.textContent = `${e.target.value.length}/25`;
         updateLivePreview();
     });
 
+    function setOffsetY(val) {
+        offsetYSliderEl.value = val;
+        const labels = ['0 (Trên cùng)', '1 (Giữa)', '2 (Dưới đáy)'];
+        lblOffsetYEl.textContent = labels[val] || val;
+        updateLivePreview();
+    }
+
+    const handleOffsetY = (e) => {
+        const val = parseInt(e.target.value);
+        const labels = ['0 (Trên cùng)', '1 (Giữa)', '2 (Dưới đáy)'];
+        lblOffsetYEl.textContent = labels[val] || val;
+        updateLivePreview();
+    };
+
+    offsetYSliderEl.addEventListener('input', handleOffsetY);
+    offsetYSliderEl.addEventListener('change', handleOffsetY);
+
+    document.getElementById('btnAlignTop').addEventListener('click', () => setOffsetY(0));
+    document.getElementById('btnAlignMiddle').addEventListener('click', () => setOffsetY(1));
+    document.getElementById('btnAlignBottom').addEventListener('click', () => setOffsetY(2));
+
     fontSizeSelectorEl.addEventListener('change', () => {
         const size = parseInt(fontSizeSelectorEl.value);
         if (size === 5) {
-            wrapperOffsetYEl.classList.remove('opacity-50', 'pointer-events-none');
+            offsetYSliderEl.disabled = false;
+            wrapperOffsetYEl.style.opacity = '1';
+            setOffsetY(1); // default to centered for 5-row
         } else {
-            wrapperOffsetYEl.classList.add('opacity-50', 'pointer-events-none');
+            offsetYSliderEl.disabled = true;
+            wrapperOffsetYEl.style.opacity = '0.5';
             offsetYSliderEl.value = 0;
-            lblOffsetYEl.textContent = '0 (Tràn ô)';
+            lblOffsetYEl.textContent = '0 (Đầy khung)';
         }
-        updateLivePreview();
-    });
-
-    offsetSliderEl.addEventListener('input', (e) => {
-        lblOffsetXEl.textContent = e.target.value;
-        updateLivePreview();
-    });
-
-    offsetYSliderEl.addEventListener('input', (e) => {
-        const val = parseInt(e.target.value);
-        const labels = ['0 (Trên cùng)', '1 (Giữa hàng)', '2 (Dưới đáy)'];
-        lblOffsetYEl.textContent = labels[val] || val;
         updateLivePreview();
     });
 
@@ -671,12 +719,16 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('btnCancelPreview').addEventListener('click', () => {
         textInputEl.value = '';
         textLengthEl.textContent = '0/25';
+        activePresetKey = null;
+        document.querySelectorAll('.preset-btn').forEach(btn => {
+            btn.classList.remove('border-emerald-500', 'bg-emerald-500/20', 'text-white');
+        });
         clearPreview();
     });
     
     // Preset Buttons
     document.querySelectorAll('.preset-btn').forEach(btn => {
-        btn.addEventListener('click', () => insertPreset(btn.dataset.preset));
+        btn.addEventListener('click', () => selectPresetForPreview(btn.dataset.preset));
     });
 
     // Export Buttons
