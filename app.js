@@ -545,3 +545,4 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initial render
     initCalendar(2024);
 });
+

@@ -69,3 +69,4 @@ Dự án là ứng dụng Web tĩnh (Zero-dependency), không cần cài đặt 
 Dự án được phân phối dưới giấy phép **MIT License**. Bạn hoàn toàn có thể tự do sử dụng, chỉnh sửa và đóng góp cho dự án.
 
 Được phát triển với ❤️ bởi [khanhlop11](https://github.com/khanhlop11).
+
