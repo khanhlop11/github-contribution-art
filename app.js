@@ -558,10 +558,21 @@ echo "DONE! Check your profile at: https://github.com/${user}"
 }
 
 function downloadScript() {
-    const user = document.getElementById('inputGithubUser').value.trim() || 'khanhlop11';
-    const email = document.getElementById('inputGithubEmail').value.trim() || 'phamquockhanh2k7@gmail.com';
-    const repo = document.getElementById('inputRepoName').value.trim() || 'my-github-art';
+    const user = document.getElementById('inputGithubUser').value.trim();
+    const email = document.getElementById('inputGithubEmail').value.trim();
+    const repo = document.getElementById('inputRepoName').value.trim() || `github-art-${currentYear}`;
     const os = document.querySelector('input[name="osPlatform"]:checked').value;
+
+    if (!user) {
+        alert("Please enter your GitHub Username / Vui lòng nhập GitHub Username của bạn!");
+        document.getElementById('inputGithubUser').focus();
+        return;
+    }
+    if (!email) {
+        alert("Please enter your GitHub Email / Vui lòng nhập Email tài khoản GitHub của bạn!");
+        document.getElementById('inputGithubEmail').focus();
+        return;
+    }
 
     let content = '';
     let filename = '';
@@ -586,15 +597,25 @@ function downloadScript() {
 }
 
 function copyScript() {
-    const user = document.getElementById('inputGithubUser').value.trim() || 'khanhlop11';
-    const email = document.getElementById('inputGithubEmail').value.trim() || 'phamquockhanh2k7@gmail.com';
-    const repo = document.getElementById('inputRepoName').value.trim() || 'my-github-art';
+    const user = document.getElementById('inputGithubUser').value.trim();
+    const email = document.getElementById('inputGithubEmail').value.trim();
+    const repo = document.getElementById('inputRepoName').value.trim() || `github-art-${currentYear}`;
     const os = document.querySelector('input[name="osPlatform"]:checked').value;
+
+    if (!user) {
+        alert("Please enter your GitHub Username / Vui lòng nhập GitHub Username của bạn!");
+        document.getElementById('inputGithubUser').focus();
+        return;
+    }
+    if (!email) {
+        alert("Please enter your GitHub Email / Vui lòng nhập Email tài khoản GitHub của bạn!");
+        document.getElementById('inputGithubEmail').focus();
+        return;
+    }
 
     const content = (os === 'windows') 
         ? generatePowerShellScript(user, email, repo, currentYear)
         : generateBashScript(user, email, repo, currentYear);
-        : generateBashScript(user, repo, currentYear);
 
     navigator.clipboard.writeText(content).then(() => {
         alert("Đã sao chép toàn bộ mã script vào bộ nhớ tạm (Clipboard)!");
