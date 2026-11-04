@@ -42,18 +42,33 @@
 1. Go to [github.com/new](https://github.com/new) and create a repository (e.g., `github-art-2000`).
 2. Choose **Private** (recommended to keep your repo list clean) or **Public**, and leave it **completely empty** (do not initialize with README, license, or .gitignore).
 
-### Step 3: Download & Execute Script
-1. Enter your GitHub **Username** and the target **Repository Name** in the export panel.
-2. Click **Download Script** (`draw_art_xxxx.ps1` or `.sh`).
-3. Run the script in your terminal:
+### Step 3: Run the Script (2 Easy Ways)
+
+You can choose either of the following two methods:
+
+#### Method A: 1-Click Copy & Paste (Fastest & Recommended)
+1. Click the **Copy mã Script / Copy Script** button on the web app.
+2. Open your terminal:
+   - **Windows:** Open **PowerShell**, right-click to paste the script, and press `Enter`.
+   - **macOS / Linux:** Open **Terminal**, paste the script, and press `Enter`.
+3. Done! No file saving or script permission setup required.
+
+#### Method B: Download & Execute Script File
+1. Click **Tải Script về máy / Download Script** (`draw_art_<year>.ps1` or `.sh`).
+2. Open terminal in the directory where the file was saved (usually `Downloads`):
 
 ```powershell
-# Windows (PowerShell):
-.\draw_art_2000.ps1
+# Windows (PowerShell) - use Bypass flag to avoid Windows ExecutionPolicy restrictions:
+cd ~/Downloads
+powershell -ExecutionPolicy Bypass -File ".\draw_art_2026.ps1"
 
 # macOS / Linux (Bash):
-chmod +x draw_art_2000.sh && ./draw_art_2000.sh
+cd ~/Downloads
+chmod +x draw_art_2026.sh && ./draw_art_2026.sh
 ```
+
+> [!TIP]
+> **Windows Troubleshooting:** If PowerShell shows an error like `cannot be loaded because running scripts is disabled on this system`, running `powershell -ExecutionPolicy Bypass -File ".\draw_art_xxxx.ps1"` or using **Method A (Copy & Paste)** will bypass the restriction safely without modifying permanent system policies.
 
 ### Step 4: Admire Your Profile Canvas
 1. Visit your GitHub profile (`https://github.com/<your-username>`).

@@ -349,20 +349,39 @@
                     <h2 class="text-sm font-bold text-white">3 Bước Chạy An Toàn</h2>
                 </div>
 
-                <div class="space-y-3 text-xs text-slate-300">
+                <div class="space-y-3.5 text-xs text-slate-300">
                     <div class="flex items-start space-x-2.5">
                         <span class="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 flex items-center justify-center shrink-0 font-bold text-[10px]">1</span>
-                        <p>Tạo 1 repo trống trên GitHub với tên vừa nhập (khuyên chọn <strong>Private</strong> để profile gọn gàng).</p>
+                        <div>
+                            <p class="font-medium text-white">Tạo repo trống trên GitHub</p>
+                            <p class="text-[11px] text-slate-400 mt-0.5">Đặt tên trùng với ô bên trái (khuyên chọn <strong>Private</strong> để profile gọn gàng và không tích README).</p>
+                        </div>
                     </div>
 
                     <div class="flex items-start space-x-2.5">
                         <span class="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 flex items-center justify-center shrink-0 font-bold text-[10px]">2</span>
-                        <p>Mở PowerShell trên máy và chạy file vừa tải: <br><code class="bg-ghBg px-1.5 py-0.5 rounded text-emerald-400 font-mono text-[11px] mt-1 inline-block">.\draw_art.ps1</code></p>
+                        <div class="space-y-1.5 flex-1">
+                            <p class="font-medium text-white">Chạy Script trên máy</p>
+                            <div class="p-2 rounded bg-ghBg border border-ghBorder/80 text-[11px] space-y-1">
+                                <p class="text-emerald-400 font-semibold flex items-center gap-1">
+                                    <span>⚡ Cách nhanh nhất:</span>
+                                </p>
+                                <p class="text-slate-300">Bấm nút <strong>Copy mã Script</strong> &rarr; Mở PowerShell &rarr; Chuột phải để dán &rarr; Enter.</p>
+                            </div>
+                            <div class="p-2 rounded bg-ghBg border border-ghBorder/80 text-[11px] space-y-1 text-slate-300">
+                                <p class="text-slate-400 font-semibold">📁 Nếu tải file về máy:</p>
+                                <p>Mở PowerShell tại thư mục Downloads và chạy lệnh:</p>
+                                <code class="block bg-slate-900/90 text-emerald-400 p-1.5 rounded font-mono text-[10px] break-all select-all">powershell -ExecutionPolicy Bypass -File .\draw_art_*.ps1</code>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="flex items-start space-x-2.5">
                         <span class="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 flex items-center justify-center shrink-0 font-bold text-[10px]">3</span>
-                        <p>Vào trang cá nhân, bấm <strong>Contribution settings</strong> -> bật <strong>Private contributions</strong> để xem tranh!</p>
+                        <div>
+                            <p class="font-medium text-white">Chiêm ngưỡng thành quả</p>
+                            <p class="text-[11px] text-slate-400 mt-0.5">Vào trang GitHub cá nhân, bấm <strong>Contribution settings</strong> &rarr; bật <strong>Private contributions</strong> để xem tranh!</p>
+                        </div>
                     </div>
                 </div>
             </div>
