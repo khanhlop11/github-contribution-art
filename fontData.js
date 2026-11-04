@@ -48,7 +48,7 @@ const PIXEL_FONTS_7 = {
     '*': ["...#...", "...#...", ".#####.", "..###..", ".##.##.", "#.....#", "......."]
 };
 
-// Compact 5-row Font (Slim & Elegant 3x5 Proportion - Không bị mập)
+// Compact 5-row Font (Slim & Elegant 3x5 Proportion)
 const PIXEL_FONTS_5 = {
     'A': [
         "###",
@@ -348,7 +348,7 @@ const PIXEL_FONTS_5 = {
 
 const PRESET_ICONS = {
     'heart': {
-        name: 'Trái tim',
+        name: 'Heart',
         width: 7,
         height: 7,
         matrix: [
@@ -362,7 +362,7 @@ const PRESET_ICONS = {
         ]
     },
     'smile': {
-        name: 'Mặt cười',
+        name: 'Smiley Face',
         width: 7,
         height: 7,
         matrix: [
@@ -376,7 +376,7 @@ const PRESET_ICONS = {
         ]
     },
     'star': {
-        name: 'Ngôi sao',
+        name: 'Star',
         width: 7,
         height: 7,
         matrix: [
@@ -390,7 +390,7 @@ const PRESET_ICONS = {
         ]
     },
     'fire': {
-        name: 'Ngọn lửa',
+        name: 'Flame',
         width: 7,
         height: 7,
         matrix: [

@@ -3,7 +3,7 @@
 // ============================================================
 
 const MIN_SUPPORTED_YEAR = 1970;
-let currentYear = new Date().getFullYear(); // Tự động lấy năm hiện tại (2026, sang 2027 tự nhảy lên 2027)
+let currentYear = new Date().getFullYear(); // Dynamic current year (e.g., 2026, advances automatically)
 let activeTool = 'brush'; // 'brush' | 'eraser' | 'text'
 let activeIntensity = 4; // 1, 2, 3, 4
 let isMouseDown = false;
@@ -95,7 +95,7 @@ function initCalendar(year) {
             cell.dataset.col = c;
             cell.dataset.row = r;
 
-            const dateStr = cellDate.toLocaleDateString('vi-VN', { 
+            const dateStr = cellDate.toLocaleDateString('en-US', { 
                 weekday: 'short', 
                 year: 'numeric', 
                 month: 'short', 
@@ -806,11 +806,11 @@ function setupApp() {
     document.getElementById('btnDownloadScript').addEventListener('click', downloadScript);
     document.getElementById('btnCopyScript').addEventListener('click', copyScript);
 
-    // Initial render with dynamic current year (tự nhảy 2026 -> 2027...)
+    // Initial render with dynamic current year
     initCalendar(new Date().getFullYear());
 }
 
-// Khởi chạy ứng dụng an toàn cho cả trường hợp DOMContentLoaded đã bắn xong
+// Safely bootstrap application
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', setupApp);
 } else {
