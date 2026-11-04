@@ -3,7 +3,7 @@
 > **Visual GitHub Contribution Graph Art Studio & Generator** — Công cụ thiết kế trực quan giúp vẽ pixel art và viết chữ nghệ thuật trên biểu đồ đóng góp (Contribution Graph) của GitHub cho **mọi năm (2000 – 2099)** với độ chính xác 100%.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![GitHub Pages](https://img.shields.io/badge/Demo-Live%20on%20GitHub%20Pages-brightgreen)](https://khanhlop11.github.io/github-contribution-art)
+[![Live Demo](https://img.shields.io/badge/Demo-art.qkhanh.io.vn-brightgreen?style=flat&logo=google-chrome)](https://art.qkhanh.io.vn)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
 
 ---
@@ -31,7 +31,7 @@
 ## 🚀 Hướng dẫn sử dụng (How to Use)
 
 ### Bước 1: Thiết kế tranh biểu đồ
-1. Mở trang web [GitHub Contribution Art](https://khanhlop11.github.io/github-contribution-art).
+1. Mở trang web [art.qkhanh.io.vn](https://art.qkhanh.io.vn).
 2. Nhập **Năm** bạn muốn vẽ (ví dụ `2000`, `2024`, `2026`...).
 3. Gõ chữ hoặc dùng cọ vẽ tự do để tạo tác phẩm theo ý thích.
 
