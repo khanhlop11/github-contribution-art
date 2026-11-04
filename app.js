@@ -463,11 +463,10 @@ $totalCreated = 0
 
 foreach ($cell in $activeCells) {
     $cellDate = $firstSunday.AddDays($cell.C * 7 + $cell.R)
-    $dayStr = $cellDate.ToString("yyyy-MM-dd")
     
     for ($k = 1; $k -le $cell.Commits; $k++) {
         $minute = ($k * 2).ToString("00")
-        $dateStr = "${dayStr}T12:${minute}:00Z"
+        $dateStr = $cellDate.ToString("yyyy-MM-dd") + "T12:" + $minute + ":00Z"
         $env:GIT_AUTHOR_DATE = $dateStr
         $env:GIT_COMMITTER_DATE = $dateStr
         
@@ -586,6 +585,24 @@ function downloadScript() {
     URL.revokeObjectURL(url);
 }
 
+function fallbackCopyText(text) {
+    const textArea = document.createElement("textarea");
+    textArea.value = text;
+    textArea.style.position = "fixed";
+    textArea.style.left = "-999999px";
+    textArea.style.top = "-999999px";
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    try {
+        document.execCommand('copy');
+        alert("Đã sao chép toàn bộ mã script vào bộ nhớ tạm (Clipboard)!");
+    } catch (err) {
+        alert("Không thể copy tự động, vui lòng dùng nút Tải Script về máy!");
+    }
+    document.body.removeChild(textArea);
+}
+
 function copyScript() {
     const user = document.getElementById('inputGithubUser').value.trim();
     const repo = document.getElementById('inputRepoName').value.trim() || `github-art-${currentYear}`;
@@ -601,9 +618,15 @@ function copyScript() {
         ? generatePowerShellScript(user, repo, currentYear)
         : generateBashScript(user, repo, currentYear);
 
-    navigator.clipboard.writeText(content).then(() => {
-        alert("Đã sao chép toàn bộ mã script vào bộ nhớ tạm (Clipboard)!");
-    });
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(content).then(() => {
+            alert("Đã sao chép toàn bộ mã script vào bộ nhớ tạm (Clipboard)!");
+        }).catch(() => {
+            fallbackCopyText(content);
+        });
+    } else {
+        fallbackCopyText(content);
+    }
 }
 
 // ============================================================
