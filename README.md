@@ -43,7 +43,7 @@
 2. Choose **Private** (recommended to keep your repo list clean) or **Public**, and leave it **completely empty** (do not initialize with README, license, or .gitignore).
 
 ### Step 3: Download & Execute Script
-1. Enter your GitHub **Username**, **Email**, and the **Repository Name** in the export panel.
+1. Enter your GitHub **Username** and the target **Repository Name** in the export panel.
 2. Click **Download Script** (`draw_art_xxxx.ps1` or `.sh`).
 3. Run the script in your terminal:
 
