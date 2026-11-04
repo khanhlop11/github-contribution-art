@@ -1,66 +1,88 @@
-# 🎨 CustomYourGithub
+# 🎨 GitHub Contribution Art Studio (CustomYourGithub)
 
-> **GitHub Contribution Graph Art Studio** — Công cụ trực quan giúp thiết kế và tự động tạo tranh pixel nghệ thuật trên biểu đồ đóng góp của GitHub chuẩn 100%.
+> **Visual GitHub Contribution Graph Art Studio & Generator** — Công cụ thiết kế trực quan giúp vẽ pixel art và viết chữ nghệ thuật trên biểu đồ đóng góp (Contribution Graph) của GitHub cho **mọi năm (2000 – 2099)** với độ chính xác 100%.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![GitHub Pages](https://img.shields.io/badge/Demo-Live%20on%20GitHub%20Pages-brightgreen)](https://khanhlop11.github.io/CustomYourGithub)
+[![GitHub Pages](https://img.shields.io/badge/Demo-Live%20on%20GitHub%20Pages-brightgreen)](https://khanhlop11.github.io/github-contribution-art)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
 
 ---
 
 ## ✨ Điểm nổi bật (Features)
 
-* **Chuẩn 100% theo giao diện GitHub:** Lưới 7 hàng × 53 tuần tự động đồng bộ theo năm được chọn (2020 – 2030). Tự động khóa và làm mờ các ô khuyết của ngày đầu năm và cuối năm.
-* **Bộ công cụ vẽ linh hoạt (Drawing Tools):**
-  * 🔤 **Text-to-Art Engine:** Gõ chữ -> Tự ráp font chữ pixel (hỗ trợ font Serif, Sans, Icon `<3` trái tim) -> Tự động căn giữa cân đối hai bên mép.
-  * ✏️ **Cọ vẽ tự do (Freehand Brush):** Click hoặc giữ chuột kéo rê để tô màu và vẽ như phần mềm Paint.
-  * 🌟 **Biểu tượng mẫu (Presets):** Chèn nhanh Trái tim ❤️, Mặt cười 😊, Ngôi sao ⭐, Ngọn lửa 🔥.
-  * 🎨 **Độ đậm nhạt (Intensity Levels):** Tùy chỉnh mức xanh từ Level 1 đến Level 4 (1 commit đến 5 commits).
-* **Bộ đếm an toàn thời gian thực (Anti-Limit Safeguard):**
-  * Tự động đếm số commit và cảnh báo nếu vượt quá giới hạn **1.000 commits / push** của GitHub.
-* **Xuất Script 1-Click (100% An toàn & Bảo mật):**
-  * Không cần đăng nhập tài khoản, không cần cấp Access Token trên web.
-  * Xuất ra file script chạy độc lập: `.ps1` cho Windows hoặc `.sh` cho macOS & Linux.
+* 📅 **Hỗ trợ mọi năm (2000 – 2099):** Tự động đồng bộ lưới 7 hàng × 53 tuần chính xác theo lịch của từng năm. Tự động tính toán các ô ngoài năm và làm mờ bảo vệ.
+* 🌐 **Chuẩn múi giờ toàn cầu (Zero Timezone Shift):** Tích hợp cơ chế ghim mốc giờ commit **12:00:00 UTC**, đảm bảo tranh hiển thị thẳng hàng 100%, không bao giờ bị lệch dòng hay nhảy ngày trên mọi múi giờ (Việt Nam, Mỹ, Châu Âu, Nhật Bản...).
+* 🔤 **Text-to-Art Engine thông minh:**
+  * Gõ chữ tự do $\rightarrow$ tự ráp font chữ pixel thanh mảnh 5 dòng (Slim & Elegant) hoặc 7 dòng cổ điển.
+  * Hỗ trợ icon đặc biệt (`<3` Trái tim, `:)` Mặt cười, `!` Dấu chấm than...).
+  * Tùy chỉnh căn lề dọc (Top / Center / Bottom), chỉnh khoảng cách chữ (Spacing) và thanh trượt dịch ngang (Offset X).
+* ✏️ **Cọ vẽ tự do & Presets (Freehand Brush):**
+  * Click hoặc kéo rê chuột để tô màu trực tiếp như Paint.
+  * Chèn nhanh các biểu tượng mẫu: Trái tim ❤️, Mặt cười 😊, Ngôi sao ⭐, Ngọn lửa 🔥.
+  * Tùy chỉnh 4 cấp độ xanh (Level 1 đến Level 4 tương ứng 1 đến 5 commits).
+* 🛡️ **Bộ đếm an toàn thời gian thực (Anti-Limit Safeguard):**
+  * Tự động đếm số commit và cảnh báo nếu vượt ngưỡng an toàn của GitHub.
+* ⚡ **Xuất Script 1-Click (100% An toàn & Bảo mật):**
+  * Không cần đăng nhập tài khoản, không yêu cầu cấp Personal Access Token trên web.
+  * Xuất ra file script chạy độc lập: `.ps1` cho Windows PowerShell hoặc `.sh` cho macOS & Linux.
 
 ---
 
 ## 🚀 Hướng dẫn sử dụng (How to Use)
 
-### Bước 1: Thiết kế biểu đồ
-1. Mở trang web [CustomYourGithub](https://khanhlop11.github.io/CustomYourGithub) trên trình duyệt.
-2. Chọn **Năm** bạn muốn vẽ tranh (ví dụ `2024` hoặc `2026`).
-3. Dùng cọ vẽ hoặc nhập chữ ở thanh công cụ để tạo hình bạn thích.
+### Bước 1: Thiết kế tranh biểu đồ
+1. Mở trang web [GitHub Contribution Art](https://khanhlop11.github.io/github-contribution-art).
+2. Nhập **Năm** bạn muốn vẽ (ví dụ `2000`, `2024`, `2026`...).
+3. Gõ chữ hoặc dùng cọ vẽ tự do để tạo tác phẩm theo ý thích.
 
 ### Bước 2: Tạo Repo trống trên GitHub
-1. Vào GitHub tạo 1 repository mới (ví dụ tên `Art-2024`).
-2. Chọn chế độ **Private** (khuyên dùng để trang cá nhân gọn gàng) và **để trống hoàn toàn** (không tạo README hay .gitignore).
+1. Vào [github.com/new](https://github.com/new) tạo 1 repository mới (ví dụ: `art-2000`).
+2. Chọn chế độ **Private** (khuyên dùng để profile gọn gàng) hoặc **Public**, và **để trống hoàn toàn** (không tích README hay .gitignore).
 
-### Bước 3: Xuất Script và Chạy
-1. Nhập Username GitHub và Tên Repository vừa tạo vào bảng xuất script.
-2. Bấm nút **"Tải Script về máy"** (file `draw_art_xxxx.ps1`).
-3. Mở PowerShell trong thư mục vừa tải và gõ lệnh chạy:
+### Bước 3: Tải Script và Chạy
+1. Nhập GitHub Username, Email và Tên Repo vừa tạo vào bảng xuất script.
+2. Bấm nút **"Tải Script về máy"** (`draw_art_xxxx.ps1` hoặc `.sh`).
+3. Mở PowerShell / Terminal tại thư mục chứa file vừa tải và chạy lệnh:
    ```powershell
-   .\draw_art_2024.ps1
-   ```
-4. Đợi khoảng 15–20 giây để script tạo các commit lịch sử và đẩy lên GitHub.
+   # Dành cho Windows:
+   .\draw_art_2000.ps1
 
-### Bước 4: Thưởng thức thành quả
-1. Vào trang cá nhân GitHub: `https://github.com/<your-username>`
-2. Bấm vào nút **Contribution settings** (góc trên bên phải biểu đồ) -> Tích chọn **Private contributions**.
-3. Nhấn `Ctrl + F5` để chiêm ngưỡng tác phẩm nghệ thuật của bạn!
+   # Dành cho macOS / Linux:
+   chmod +x draw_art_2000.sh && ./draw_art_2000.sh
+   ```
+4. Đợi script tự động tạo các commit lùi thời gian và đẩy lên GitHub.
+
+### Bước 4: Chiêm ngưỡng thành quả
+1. Truy cập trang cá nhân: `https://github.com/<username>`
+2. Nếu dùng repo Private: Nhấn vào **Contribution settings** (góc trên bên phải biểu đồ) $\rightarrow$ tích chọn **Private contributions**.
+3. Nhấn `Ctrl + F5` để thưởng thức bức tranh biểu đồ rực rỡ!
+
+---
+
+## 🌐 Hướng dẫn Deploy Web lên GitHub Pages (1-Click Free Hosting)
+
+Dự án là ứng dụng Web tĩnh (Zero-dependency, Vanilla JS), không cần server hay build phức tạp:
+
+1. Đẩy mã nguồn dự án lên repository `github-contribution-art` trên GitHub của bạn.
+2. Trên GitHub, vào mục **Settings** $\rightarrow$ chọn thẻ **Pages** ở menu bên trái.
+3. Tại phần **Build and deployment**:
+   - **Source:** Chọn `Deploy from a branch`.
+   - **Branch:** Chọn `main` và thư mục `/(root)`.
+   - Bấm **Save**.
+4. Chờ 1–2 phút, trang web sẽ tự động online tại:
+   ```text
+   https://<your-username>.github.io/github-contribution-art/
+   ```
 
 ---
 
 ## 🛠️ Chạy trực tiếp trên máy (Run Locally)
 
-Dự án là ứng dụng Web tĩnh (Zero-dependency), không cần cài đặt NodeJS hay `npm install`.
-
-1. Clone repository về máy:
-   ```bash
-   git clone https://github.com/khanhlop11/CustomYourGithub.git
-   cd CustomYourGithub
-   ```
-2. Mở file `index.html` bằng bất kỳ trình duyệt nào (Chrome, Edge, Firefox, Brave) là có thể sử dụng ngay lập tức!
+```bash
+git clone https://github.com/khanhlop11/github-contribution-art.git
+cd github-contribution-art
+```
+Mở file `index.html` trực tiếp bằng trình duyệt (Chrome, Edge, Firefox, Brave) là có thể sử dụng ngay mà không cần cài đặt Node.js hay bất kỳ thư viện nào!
 
 ---
 
@@ -69,4 +91,3 @@ Dự án là ứng dụng Web tĩnh (Zero-dependency), không cần cài đặt 
 Dự án được phân phối dưới giấy phép **MIT License**. Bạn hoàn toàn có thể tự do sử dụng, chỉnh sửa và đóng góp cho dự án.
 
 Được phát triển với ❤️ bởi [khanhlop11](https://github.com/khanhlop11).
-

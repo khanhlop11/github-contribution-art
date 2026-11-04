@@ -461,9 +461,11 @@ $totalCreated = 0
 
 foreach ($cell in $activeCells) {
     $cellDate = $firstSunday.AddDays($cell.C * 7 + $cell.R)
+    $dayStr = $cellDate.ToString("yyyy-MM-dd")
     
     for ($k = 1; $k -le $cell.Commits; $k++) {
-        $dateStr = $cellDate.AddMinutes($k * 2).ToString("yyyy-MM-ddTHH:mm:ss")
+        $minute = ($k * 2).ToString("00")
+        $dateStr = "${dayStr}T12:${minute}:00Z"
         $env:GIT_AUTHOR_DATE = $dateStr
         $env:GIT_COMMITTER_DATE = $dateStr
         
@@ -529,14 +531,15 @@ for item in "\${CELLS[@]}"; do
     TOTAL_DAYS=$((c * 7 + r))
     
     if date -v+1d >/dev/null 2>&1; then
-        CELL_DATE=$(date -j -v+\${TOTAL_DAYS}d -f "%Y-%m-%d %H:%M:%S" "$FIRST_SUNDAY" "+%Y-%m-%dT%H:%M:%S")
+        DAY_STR=$(date -j -v+\${TOTAL_DAYS}d -f "%Y-%m-%d %H:%M:%S" "$FIRST_SUNDAY" "+%Y-%m-%d")
     else
-        CELL_DATE=$(date -d "$FIRST_SUNDAY + $TOTAL_DAYS days" "+%Y-%m-%dT%H:%M:%S")
+        DAY_STR=$(date -d "$FIRST_SUNDAY + $TOTAL_DAYS days" "+%Y-%m-%d")
     fi
 
     for ((k=1; k<=commits; k++)); do
-        export GIT_AUTHOR_DATE="$CELL_DATE"
-        export GIT_COMMITTER_DATE="$CELL_DATE"
+        printf -v min "%02d" $((k * 2))
+        export GIT_AUTHOR_DATE="\${DAY_STR}T12:\${min}:00Z"
+        export GIT_COMMITTER_DATE="\${DAY_STR}T12:\${min}:00Z"
         echo "${year}-$c-$r-$k" >> README.md
         git add README.md
         git commit -m "${year}($c,$r)#$k" --quiet
