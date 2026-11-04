@@ -610,7 +610,7 @@ function copyScript() {
 // 5. EVENT LISTENERS SETUP
 // ============================================================
 
-document.addEventListener('DOMContentLoaded', () => {
+function setupApp() {
     // Year Input and Buttons
     yearInputEl.addEventListener('change', (e) => {
         initCalendar(parseInt(e.target.value));
@@ -761,4 +761,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initial render with dynamic current year (tự nhảy 2026 -> 2027...)
     initCalendar(new Date().getFullYear());
-});
+}
+
+// Khởi chạy ứng dụng an toàn cho cả trường hợp DOMContentLoaded đã bắn xong
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupApp);
+} else {
+    setupApp();
+}
