@@ -2,7 +2,8 @@
 // CustomYourGithub - Core Application Logic
 // ============================================================
 
-let currentYear = 2024;
+const MIN_SUPPORTED_YEAR = 1970;
+let currentYear = new Date().getFullYear(); // Tự động lấy năm hiện tại (2026, sang 2027 tự nhảy lên 2027)
 let activeTool = 'brush'; // 'brush' | 'eraser' | 'text'
 let activeIntensity = 4; // 1, 2, 3, 4
 let isMouseDown = false;
@@ -59,11 +60,14 @@ function getFirstSundayOfYear(year) {
 }
 
 function initCalendar(year) {
+    const maxYear = new Date().getFullYear();
     currentYear = parseInt(year);
-    if (isNaN(currentYear) || currentYear < 2000 || currentYear > 2099) {
-        currentYear = 2024;
+    if (isNaN(currentYear) || currentYear < MIN_SUPPORTED_YEAR || currentYear > maxYear) {
+        currentYear = maxYear;
     }
     yearInputEl.value = currentYear;
+    yearInputEl.min = MIN_SUPPORTED_YEAR;
+    yearInputEl.max = maxYear;
 
     pixelGridEl.innerHTML = '';
     monthHeadersEl.innerHTML = '';
@@ -609,12 +613,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     btnPrevYearEl.addEventListener('click', () => {
         const y = parseInt(yearInputEl.value) - 1;
-        initCalendar(y);
+        if (y >= MIN_SUPPORTED_YEAR) initCalendar(y);
     });
 
     btnNextYearEl.addEventListener('click', () => {
         const y = parseInt(yearInputEl.value) + 1;
-        initCalendar(y);
+        if (y <= new Date().getFullYear()) initCalendar(y);
     });
 
     // Tool Buttons
@@ -750,6 +754,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('btnDownloadScript').addEventListener('click', downloadScript);
     document.getElementById('btnCopyScript').addEventListener('click', copyScript);
 
-    // Initial render
-    initCalendar(2024);
+    // Initial render with dynamic current year (tự nhảy 2026 -> 2027...)
+    initCalendar(new Date().getFullYear());
 });

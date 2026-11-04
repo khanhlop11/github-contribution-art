@@ -10,7 +10,7 @@
 
 ## ✨ Điểm nổi bật (Features)
 
-* 📅 **Hỗ trợ mọi năm (2000 – 2099):** Tự động đồng bộ lưới 7 hàng × 53 tuần chính xác theo lịch của từng năm. Tự động tính toán các ô ngoài năm và làm mờ bảo vệ.
+* 📅 **Hỗ trợ từ 1970 đến nay (Tự động cập nhật qua từng năm):** Lấy mốc thời gian động theo hệ thống (`new Date().getFullYear()`). Sang năm 2027, 2028 web sẽ tự động mở rộng theo thời gian thực mà không cần sửa code. Tự động đồng bộ lưới 7 hàng × 53 tuần chính xác theo lịch của từng năm.
 * 🌐 **Chuẩn múi giờ toàn cầu (Zero Timezone Shift):** Tích hợp cơ chế ghim mốc giờ commit **12:00:00 UTC**, đảm bảo tranh hiển thị thẳng hàng 100%, không bao giờ bị lệch dòng hay nhảy ngày trên mọi múi giờ (Việt Nam, Mỹ, Châu Âu, Nhật Bản...).
 * 🔤 **Text-to-Art Engine thông minh:**
   * Gõ chữ tự do $\rightarrow$ tự ráp font chữ pixel thanh mảnh 5 dòng (Slim & Elegant) hoặc 7 dòng cổ điển.
