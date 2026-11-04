@@ -104,7 +104,7 @@ function initCalendar(year) {
 
             if (!isCurrentYear) {
                 cell.classList.add('cell-disabled');
-                cell.title = `Ngoài năm ${currentYear} (${dateStr})`;
+                cell.title = `Outside year ${currentYear} (${dateStr})`;
             } else {
                 cell.title = `${dateStr} - ${LEVEL_COMMITS[gridData[c][r]]} commits`;
             }
@@ -185,13 +185,13 @@ function updateStats() {
     // Safety badge evaluation
     if (totalCommits > 1000) {
         safetyBadgeEl.className = 'text-xs px-2.5 py-0.5 rounded-full font-medium bg-red-500/20 text-red-400 border border-red-500/40';
-        safetyBadgeEl.textContent = 'Vượt quá 1.000 commits (Nguy cơ lỗi!)';
+        safetyBadgeEl.textContent = 'Exceeds 1,000 commits (Risk of lag!)';
     } else if (totalCommits >= 800) {
         safetyBadgeEl.className = 'text-xs px-2.5 py-0.5 rounded-full font-medium bg-amber-500/20 text-amber-400 border border-amber-500/40';
-        safetyBadgeEl.textContent = 'Gần ngưỡng 1.000 commits';
+        safetyBadgeEl.textContent = 'Near 1,000 commits threshold';
     } else {
         safetyBadgeEl.className = 'text-xs px-2.5 py-0.5 rounded-full font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/30';
-        safetyBadgeEl.textContent = 'An toàn (< 800 commits)';
+        safetyBadgeEl.textContent = 'Safe (< 800 commits)';
     }
 }
 
@@ -483,8 +483,8 @@ git remote add origin "https://github.com/${user}/${repo}.git"
 Write-Host "Pushing to GitHub (https://github.com/${user}/${repo}.git)..." -ForegroundColor Yellow
 git push -u origin main --force
 
-Write-Host "=== HOAN TAT! ===" -ForegroundColor Green
-Write-Host "Hay vao https://github.com/${user} de chiem nguong thanh qua!" -ForegroundColor Cyan
+Write-Host "=== FINISHED! ===" -ForegroundColor Green
+Write-Host "Check out your artwork at https://github.com/${user}!" -ForegroundColor Cyan
 `;
 }
 
@@ -558,7 +558,7 @@ function downloadScript() {
     const os = document.querySelector('input[name="osPlatform"]:checked').value;
 
     if (!user) {
-        alert("Please enter your GitHub Username / Vui lòng nhập GitHub Username của bạn!");
+        alert("Please enter your GitHub Username!");
         document.getElementById('inputGithubUser').focus();
         return;
     }
@@ -596,9 +596,9 @@ function fallbackCopyText(text) {
     textArea.select();
     try {
         document.execCommand('copy');
-        alert("Đã sao chép toàn bộ mã script vào bộ nhớ tạm (Clipboard)!");
+        alert("Copied entire script to clipboard!");
     } catch (err) {
-        alert("Không thể copy tự động, vui lòng dùng nút Tải Script về máy!");
+        alert("Unable to copy automatically, please download the script file!");
     }
     document.body.removeChild(textArea);
 }
@@ -609,7 +609,7 @@ function copyScript() {
     const os = document.querySelector('input[name="osPlatform"]:checked').value;
 
     if (!user) {
-        alert("Please enter your GitHub Username / Vui lòng nhập GitHub Username của bạn!");
+        alert("Please enter your GitHub Username!");
         document.getElementById('inputGithubUser').focus();
         return;
     }
@@ -620,7 +620,7 @@ function copyScript() {
 
     if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(content).then(() => {
-            alert("Đã sao chép toàn bộ mã script vào bộ nhớ tạm (Clipboard)!");
+            alert("Copied entire script to clipboard!");
         }).catch(() => {
             fallbackCopyText(content);
         });
@@ -710,14 +710,14 @@ function setupApp() {
 
     function setOffsetY(val) {
         offsetYSliderEl.value = val;
-        const labels = ['0 (Trên cùng)', '1 (Giữa)', '2 (Dưới đáy)'];
+        const labels = ['0 (Top)', '1 (Center)', '2 (Bottom)'];
         lblOffsetYEl.textContent = labels[val] || val;
         updateLivePreview();
     }
 
     const handleOffsetY = (e) => {
         const val = parseInt(e.target.value);
-        const labels = ['0 (Trên cùng)', '1 (Giữa)', '2 (Dưới đáy)'];
+        const labels = ['0 (Top)', '1 (Center)', '2 (Bottom)'];
         lblOffsetYEl.textContent = labels[val] || val;
         updateLivePreview();
     };
@@ -746,13 +746,13 @@ function setupApp() {
             offsetYSliderEl.disabled = true;
             wrapperOffsetYEl.style.opacity = '0.5';
             offsetYSliderEl.value = 0;
-            lblOffsetYEl.textContent = '0 (Đầy khung)';
+            lblOffsetYEl.textContent = '0 (Full height)';
         }
         updateLivePreview();
     });
 
     spacingSliderEl.addEventListener('input', (e) => {
-        lblSpacingEl.textContent = `${e.target.value} ô`;
+        lblSpacingEl.textContent = `${e.target.value} ${e.target.value === '1' ? 'cell' : 'cells'}`;
         updateLivePreview();
     });
 
