@@ -462,7 +462,7 @@ if (-not (Test-Path (Join-Path $targetDir ".git"))) {
     }
 } else {
     Push-Location $targetDir
-    git pull origin main --rebase 2>$null
+    git pull origin main --no-rebase -X ours 2>$null
 }
 
 $readmeFile = Join-Path $targetDir "README.md"
@@ -497,8 +497,9 @@ Write-Host "Created $totalCreated commits for ${year} successfully!" -Foreground
 Write-Host "Pushing to GitHub..." -ForegroundColor Yellow
 git push -u origin main
 if ($LASTEXITCODE -ne 0) {
-    Write-Host "Merging remote history and retrying push..." -ForegroundColor Yellow
-    git pull origin main --rebase -X theirs 2>$null
+    Write-Host "Syncing remote branch history and completing push..." -ForegroundColor Yellow
+    git fetch origin main 2>$null
+    git merge origin/main --allow-unrelated-histories -X ours --no-edit 2>$null
     git push -u origin main
 }
 
@@ -550,7 +551,7 @@ if [ ! -d "$TARGET_DIR/.git" ]; then
     fi
 else
     cd "$TARGET_DIR"
-    git pull origin main --rebase 2>/dev/null || true
+    git pull origin main --no-rebase -X ours 2>/dev/null || true
 fi
 
 if [ ! -f "README.md" ]; then
@@ -585,8 +586,9 @@ done
 
 echo "Pushing commits for ${year} to GitHub..."
 if ! git push -u origin main; then
-    echo "Merging remote history and retrying push..."
-    git pull origin main --rebase -X theirs 2>/dev/null || true
+    echo "Syncing remote branch history and completing push..."
+    git fetch origin main 2>/dev/null || true
+    git merge origin/main --allow-unrelated-histories -X ours --no-edit 2>/dev/null || true
     git push -u origin main
 fi
 
