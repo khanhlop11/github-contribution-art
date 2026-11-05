@@ -444,21 +444,25 @@ function generatePowerShellScript(user, repo, year) {
 # ============================================================
 
 $repoName = "${repo}"
+$repoUrl = "https://github.com/${user}/${repo}.git"
 $baseDir = if ($PSScriptRoot) { $PSScriptRoot } else { (Get-Location).Path }
 $targetDir = Join-Path $baseDir $repoName
 
-if (-not (Test-Path $targetDir)) {
-    New-Item -ItemType Directory -Path $targetDir -Force | Out-Null
-}
-
-Push-Location $targetDir
-
-if (-not (Test-Path ".git")) {
-    git init
-    git branch -M main
-    git remote add origin "https://github.com/${user}/${repo}.git"
+if (-not (Test-Path (Join-Path $targetDir ".git"))) {
+    Write-Host "Syncing with GitHub repository: $repoUrl..." -ForegroundColor Cyan
+    git clone $repoUrl $targetDir 2>$null
+    if (-not (Test-Path (Join-Path $targetDir ".git"))) {
+        New-Item -ItemType Directory -Path $targetDir -Force | Out-Null
+        Push-Location $targetDir
+        git init
+        git branch -M main
+        git remote add origin $repoUrl
+    } else {
+        Push-Location $targetDir
+    }
 } else {
-    git remote set-url origin "https://github.com/${user}/${repo}.git" 2>$null
+    Push-Location $targetDir
+    git pull origin main --rebase 2>$null
 }
 
 $readmeFile = Join-Path $targetDir "README.md"
@@ -492,6 +496,11 @@ foreach ($cell in $activeCells) {
 Write-Host "Created $totalCreated commits for ${year} successfully!" -ForegroundColor Green
 Write-Host "Pushing to GitHub..." -ForegroundColor Yellow
 git push -u origin main
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "Merging remote history and retrying push..." -ForegroundColor Yellow
+    git pull origin main --rebase -X theirs 2>$null
+    git push -u origin main
+}
 
 Pop-Location
 
@@ -524,17 +533,24 @@ function generateBashScript(user, repo, year) {
 
 set -e
 REPO_NAME="${repo}"
+REPO_URL="https://github.com/${user}/${repo}.git"
 TARGET_DIR="./$REPO_NAME"
 
-mkdir -p "$TARGET_DIR"
-cd "$TARGET_DIR"
-
-if [ ! -d ".git" ]; then
-    git init
-    git branch -M main
-    git remote add origin "https://github.com/${user}/${repo}.git"
+if [ ! -d "$TARGET_DIR/.git" ]; then
+    echo "Syncing with GitHub repository: $REPO_URL..."
+    git clone "$REPO_URL" "$TARGET_DIR" 2>/dev/null || true
+    if [ ! -d "$TARGET_DIR/.git" ]; then
+        mkdir -p "$TARGET_DIR"
+        cd "$TARGET_DIR"
+        git init
+        git branch -M main
+        git remote add origin "$REPO_URL"
+    else
+        cd "$TARGET_DIR"
+    fi
 else
-    git remote set-url origin "https://github.com/${user}/${repo}.git" 2>/dev/null || true
+    cd "$TARGET_DIR"
+    git pull origin main --rebase 2>/dev/null || true
 fi
 
 if [ ! -f "README.md" ]; then
@@ -568,7 +584,11 @@ for item in "\${CELLS[@]}"; do
 done
 
 echo "Pushing commits for ${year} to GitHub..."
-git push -u origin main
+if ! git push -u origin main; then
+    echo "Merging remote history and retrying push..."
+    git pull origin main --rebase -X theirs 2>/dev/null || true
+    git push -u origin main
+fi
 
 cd ..
 echo "=== FINISHED YEAR ${year}! ==="
